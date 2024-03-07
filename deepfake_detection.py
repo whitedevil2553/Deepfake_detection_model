@@ -17,7 +17,7 @@ import torch.nn.functional as F
 from facenet_pytorch import MTCNN, InceptionResnetV1
 import numpy as np
 from PIL import Image
-import cv2
+# import cv2
 from pytorch_grad_cam import GradCAM
 from pytorch_grad_cam.utils.model_targets import ClassifierOutputTarget
 from pytorch_grad_cam.utils.image import show_cam_on_image
@@ -98,7 +98,13 @@ if input_image is not None:
         grayscale_cam = cam(input_tensor=face, targets=targets, eigen_smooth=True)
         grayscale_cam = grayscale_cam[0, :]
         visualization = show_cam_on_image(face_image_to_plot, grayscale_cam, use_rgb=True)
-        face_with_mask = cv2.addWeighted(prev_face, 1, visualization, 0.5, 0)
+        # face_with_mask = cv2.addWeighted(prev_face, 1, visualization, 0.5, 0)
+
+
+        face_with_mask = np.array(Image.fromarray(face_image_to_plot).convert('RGB').resize((prev_face.shape[1], prev_face.shape[0])))
+
+        face_with_mask = (prev_face.astype(float) + visualization.astype(float)) / 2
+
 
         with torch.no_grad():
             output = torch.sigmoid(model(face).squeeze(0))

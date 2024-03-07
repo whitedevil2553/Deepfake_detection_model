@@ -3,7 +3,7 @@ jupyter
 Pillow
 facenet-pytorch
 torch
-opencv-python
+numpy
 grad-cam
 requests
 torchvision
