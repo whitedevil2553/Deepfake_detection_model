@@ -59,7 +59,7 @@ if input_image is not None:
     )
 
 
-
+#model load by the download link
     model_download_link = "https://drive.google.com/uc?export=download&id=137wNyE7NiEfPZ5D2p67aAK-U2-qwUPip"
 
     # Download the model file from the provided link
@@ -67,6 +67,7 @@ if input_image is not None:
     response.raise_for_status()  # Check for any errors during download
 
     # Load the model from the downloaded content
+    #i changed this loading style by using BytesIO
     checkpoint = torch.load(BytesIO(response.content), map_location=torch.device('cpu'))
     model.load_state_dict(checkpoint['model_state_dict'])
     model.to(DEVICE)
@@ -98,12 +99,11 @@ if input_image is not None:
         grayscale_cam = cam(input_tensor=face, targets=targets, eigen_smooth=True)
         grayscale_cam = grayscale_cam[0, :]
         visualization = show_cam_on_image(face_image_to_plot, grayscale_cam, use_rgb=True)
-        # face_with_mask = cv2.addWeighted(prev_face, 1, visualization, 0.5, 0)
+        face_with_mask = cv2.addWeighted(prev_face, 1, visualization, 0.5, 0)
 
-
-        face_with_mask = np.array(Image.fromarray(face_image_to_plot).convert('RGB').resize((prev_face.shape[1], prev_face.shape[0])))
-
-        face_with_mask = (prev_face.astype(float) + visualization.astype(float)) / 2
+        ##this is the another method to get the output of face using numpy
+        # face_with_mask = np.array(Image.fromarray(face_image_to_plot).convert('RGB').resize((prev_face.shape[1], prev_face.shape[0])))
+        # face_with_mask = (prev_face.astype(float) + visualization.astype(float)) / 2
 
 
         with torch.no_grad():
