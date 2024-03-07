@@ -22,6 +22,8 @@ from pytorch_grad_cam import GradCAM
 from pytorch_grad_cam.utils.model_targets import ClassifierOutputTarget
 from pytorch_grad_cam.utils.image import show_cam_on_image
 import warnings
+import requests
+from io import BytesIO
 warnings.filterwarnings("ignore")
 
 
@@ -58,7 +60,14 @@ if input_image is not None:
 
 
 
-    checkpoint = torch.load("resnetinceptionv1_epoch_32.pth", map_location=torch.device('cpu'))
+    model_download_link = "https://drive.google.com/uc?export=download&id=137wNyE7NiEfPZ5D2p67aAK-U2-qwUPip"
+
+    # Download the model file from the provided link
+    response = requests.get(model_download_link)
+    response.raise_for_status()  # Check for any errors during download
+
+    # Load the model from the downloaded content
+    checkpoint = torch.load(BytesIO(response.content), map_location=torch.device('cpu'))
     model.load_state_dict(checkpoint['model_state_dict'])
     model.to(DEVICE)
     model.eval()
