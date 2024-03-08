@@ -5,6 +5,5 @@ facenet-pytorch
 torch
 opencv-python
 grad-cam
-requests
 torchvision
 numpy
