@@ -1,4 +1,3 @@
-jupyter
 gradio
 Pillow
 facenet-pytorch
